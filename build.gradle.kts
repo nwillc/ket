@@ -10,6 +10,8 @@ plugins {
     jacoco
     kotlin("jvm") version "1.3.11"
     id("com.github.nwillc.vplugin") version "2.3.0"
+    id("org.jmailen.kotlinter") version "1.20.1"
+    id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
 }
 
 group = "com.github.nwillc"
@@ -32,6 +34,11 @@ jacoco {
     toolVersion = jacocoToolVersion
 }
 
+detekt {
+    input = files("src/main/kotlin")
+    filters = ".*/build/.*"
+}
+
 tasks {
     jacocoTestCoverageVerification {
         violationRules {
@@ -41,6 +48,9 @@ tasks {
                 }
             }
         }
+    }
+    named("check") {
+        dependsOn(":jacocoTestCoverageVerification")
     }
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
