@@ -33,6 +33,13 @@ class Try<out T> private constructor(private val either: Either<Throwable, T>) {
         is Either.Left -> throw either.value
     }
 
+    fun <U> map(f: (T) -> U): Try<U> = when (either) {
+        is Either.Right -> Try {
+            f(either.value)
+        }
+        is Either.Left -> this as Try<U>
+    }
+
     override fun toString(): String {
         return when (either) {
             is Either.Right -> "Success: ${either.value}"

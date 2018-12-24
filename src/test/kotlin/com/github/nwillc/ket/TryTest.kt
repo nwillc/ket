@@ -40,4 +40,44 @@ internal class TryTest {
         assertThat(t1.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
         assertThatThrownBy { t1.get() }.isInstanceOf(ArithmeticException::class.java)
     }
+
+    @Test
+    internal fun testMapSuccessOnSuccess() {
+        val t1 = Try { "HelloWorld" }
+
+        val t2 = t1.map { it.toUpperCase() }
+        assertThat(t2.isSuccess).isTrue()
+        assertThat(t2.get()).isEqualTo("HELLOWORLD")
+    }
+
+    @Test
+    internal fun testMapFailureOnSuccess() {
+        val t1 = Try { 1 }
+        assertThat(t1.isSuccess).isTrue()
+        val t2 = t1.map { it / 0 }
+        assertThat(t2.isFailure).isTrue()
+        assertThat(t2.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
+    }
+
+    @Test
+    internal fun testMapSuccessOnFailure() {
+        val t1 = Try {
+            10 / 0
+        }
+        assertThat(t1.isFailure).isTrue()
+        val t2 = t1.map { it + 5 }
+        assertThat(t2.isFailure).isTrue()
+        assertThat(t2.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
+    }
+
+    @Test
+    internal fun testMapFailureOnFailure() {
+        val t1 = Try {
+            10 / 0
+        }
+        assertThat(t1.isFailure).isTrue()
+        val t2 = t1.map { it / 0 }
+        assertThat(t2.isFailure).isTrue()
+        assertThat(t2.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
+    }
 }
