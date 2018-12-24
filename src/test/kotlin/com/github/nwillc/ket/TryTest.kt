@@ -17,13 +17,11 @@ package com.github.nwillc.ket
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import java.io.IOError
-import java.lang.ArithmeticException
 
 internal class TryTest {
     @Test
     internal fun testSuccess() {
-        val t1: Try<Int> = Try {
+        val t1 = Try {
             10 / 2
         }
 
@@ -33,11 +31,11 @@ internal class TryTest {
 
     @Test
     internal fun testFailue() {
-        val t1: Try<Int> = Try {
+        val t1 = Try {
             10 / 0
         }
 
         assertThat(t1.isFailure).isTrue()
-        assertThatThrownBy { t1.get() } .isInstanceOf(ArithmeticException::class.java)
+        assertThatThrownBy { t1.get() }.isInstanceOf(ArithmeticException::class.java)
     }
 }

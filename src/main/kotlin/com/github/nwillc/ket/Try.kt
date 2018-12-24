@@ -14,22 +14,21 @@
 
 package com.github.nwillc.ket
 
-class Try<T>(block: () -> T) {
-    private val either: Either<Throwable, T>
+class Try<out T> private constructor(private val either: Either<Throwable, T>) {
 
-    init {
-        either = try {
-            val t = block()
-            Either.Right(t)
-        } catch (e: Throwable) {
-            Either.Left(e)
-        }
+    companion object {
+        operator fun <T> invoke(body: () -> T): Try<T> =
+            try {
+                Try(Either.Right(body()))
+            } catch (e: Throwable) {
+                Try(Either.Left(e))
+            }
     }
 
     val isSuccess get() = either.isRight
     val isFailure get() = either.isLeft
 
-    fun get(): T = when(either) {
+    fun get(): T = when (either) {
         is Either.Right -> either.value
         is Either.Left -> throw either.value
     }
