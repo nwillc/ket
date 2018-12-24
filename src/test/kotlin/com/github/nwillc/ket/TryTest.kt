@@ -26,6 +26,7 @@ internal class TryTest {
         }
 
         assertThat(t1.isSuccess).isTrue()
+        assertThat(t1.toString()).isEqualTo("Success: 5")
         assertThat(t1.get()).isEqualTo(5)
     }
 
@@ -36,6 +37,7 @@ internal class TryTest {
         }
 
         assertThat(t1.isFailure).isTrue()
+        assertThat(t1.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
         assertThatThrownBy { t1.get() }.isInstanceOf(ArithmeticException::class.java)
     }
 }

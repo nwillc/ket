@@ -32,4 +32,11 @@ class Try<out T> private constructor(private val either: Either<Throwable, T>) {
         is Either.Right -> either.value
         is Either.Left -> throw either.value
     }
+
+    override fun toString(): String {
+        return when (either) {
+            is Either.Right -> "Success: ${either.value}"
+            is Either.Left -> "Failure: ${either.value}"
+        }
+    }
 }
