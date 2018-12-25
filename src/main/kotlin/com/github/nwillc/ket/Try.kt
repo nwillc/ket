@@ -25,20 +25,20 @@ sealed class Try<out T> {
 
     val isSuccess get() = either.isRight
     val isFailure get() = either.isLeft
-    abstract val either: Either<Throwable, T>
+    protected abstract val either: Either<Throwable, T>
 
-    fun <U> fold(fa: (Throwable) -> U, fb: (T) -> U): U = either.fold(fa, fb)
-    abstract fun <U> flatMap(f: (T) -> Try<U>): Try<U>
-    abstract fun <U> map(f: (T) -> U): Try<U>
+    fun <U> fold(ff: (Throwable) -> U, fs: (T) -> U): U = either.fold(ff, fs)
+    abstract fun <U> flatMap(fn: (T) -> Try<U>): Try<U>
+    abstract fun <U> map(fn: (T) -> U): Try<U>
     abstract fun get(): T
     abstract fun getOrElse(default: @UnsafeVariance T): T
     abstract fun orElse(default: Try<@UnsafeVariance T>): Try<T>
 }
 
 class Success<out T>(value: T) : Try<T>() {
-    override val either = Either.Right(value)
-    override fun <U> flatMap(f: (T) -> Try<U>): Try<U> = f(either.value)
-    override fun <U> map(f: (T) -> U): Try<U> = Try { f(either.value) }
+    override val either = Right(value)
+    override fun <U> flatMap(fn: (T) -> Try<U>): Try<U> = fn(either.value)
+    override fun <U> map(fn: (T) -> U): Try<U> = Try { fn(either.value) }
     override fun get(): T = either.value
     override fun getOrElse(default: @UnsafeVariance T): T = either.value
     override fun orElse(default: Try<@UnsafeVariance T>): Try<T> = this
@@ -46,11 +46,11 @@ class Success<out T>(value: T) : Try<T>() {
 }
 
 class Failure<out T>(e: Throwable) : Try<T>() {
-    override val either = Either.Left(e)
+    override val either = Left(e)
     @Suppress("UNCHECKED_CAST")
-    override fun <U> flatMap(f: (T) -> Try<U>): Try<U> = this as Try<U>
+    override fun <U> flatMap(fn: (T) -> Try<U>): Try<U> = this as Try<U>
     @Suppress("UNCHECKED_CAST")
-    override fun <U> map(f: (T) -> U): Try<U> = this as Try<U>
+    override fun <U> map(fn: (T) -> U): Try<U> = this as Try<U>
     override fun get(): T = throw either.value
     override fun getOrElse(default: @UnsafeVariance T): T = default
     override fun orElse(default: Try<@UnsafeVariance T>): Try<T> = default
