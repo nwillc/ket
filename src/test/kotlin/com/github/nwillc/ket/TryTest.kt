@@ -19,12 +19,10 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 internal class TryTest {
+
     @Test
     internal fun testSuccess() {
-        val t1 = Try {
-            10 / 2
-        }
-
+        val t1 = Try { 10 / 2 }
         assertThat(t1.isSuccess).isTrue()
         assertThat(t1.toString()).isEqualTo("Success: 5")
         assertThat(t1.get()).isEqualTo(5)
@@ -32,10 +30,8 @@ internal class TryTest {
 
     @Test
     internal fun testFailue() {
-        val t1 = Try {
-            10 / 0
-        }
-
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 10 / 0 }
         assertThat(t1.isFailure).isTrue()
         assertThat(t1.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
         assertThatThrownBy { t1.get() }.isInstanceOf(ArithmeticException::class.java)
@@ -44,7 +40,6 @@ internal class TryTest {
     @Test
     internal fun testMapSuccessOnSuccess() {
         val t1 = Try { "HelloWorld" }
-
         val t2 = t1.map { it.toUpperCase() }
         assertThat(t2.isSuccess).isTrue()
         assertThat(t2.get()).isEqualTo("HELLOWORLD")
@@ -53,31 +48,96 @@ internal class TryTest {
     @Test
     internal fun testMapFailureOnSuccess() {
         val t1 = Try { 1 }
-        assertThat(t1.isSuccess).isTrue()
         val t2 = t1.map { it / 0 }
         assertThat(t2.isFailure).isTrue()
-        assertThat(t2.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
+        assertThat(t2.toString()).startsWith("Failure: java.lang.ArithmeticException:")
     }
 
     @Test
     internal fun testMapSuccessOnFailure() {
-        val t1 = Try {
-            10 / 0
-        }
-        assertThat(t1.isFailure).isTrue()
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 10 / 0 }
         val t2 = t1.map { it + 5 }
         assertThat(t2.isFailure).isTrue()
-        assertThat(t2.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
+        assertThat(t2.toString()).startsWith("Failure: java.lang.ArithmeticException:")
     }
 
     @Test
     internal fun testMapFailureOnFailure() {
-        val t1 = Try {
-            10 / 0
-        }
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 10 / 0 }
         assertThat(t1.isFailure).isTrue()
+        @Suppress("DIVISION_BY_ZERO")
         val t2 = t1.map { it / 0 }
         assertThat(t2.isFailure).isTrue()
-        assertThat(t2.toString()).isEqualTo("Failure: java.lang.ArithmeticException: / by zero")
+        assertThat(t2.toString()).startsWith("Failure: java.lang.ArithmeticException:")
+    }
+
+    @Test
+    internal fun testFlatMapSuccessOnSuccess() {
+        val t1 = Try { 2 }
+        val t2 = t1.flatMap { i -> Try { i.toString() } }
+        assertThat(t2.isSuccess)
+        assertThat(t2.get()).isEqualTo("2")
+    }
+
+    @Test
+    internal fun testFlatMapFailureOnSuccess() {
+        val t1 = Try { 2 }
+        @Suppress("DIVISION_BY_ZERO")
+        val t2 = t1.flatMap { i -> Try { i / 0 } }
+        assertThat(t2.isFailure)
+        assertThat(t2.toString()).startsWith("Failure: java.lang.ArithmeticException:")
+    }
+
+    @Test
+    internal fun testFlatMapSuccessOnFailure() {
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 2 / 0 }
+        val t2 = t1.flatMap { i -> Try { i.toString() } }
+        assertThat(t2.isFailure)
+        assertThat(t2.toString()).startsWith("Failure: java.lang.ArithmeticException:")
+    }
+
+    @Test
+    internal fun testOrElseSuccess() {
+        val t1 = Try { 2 }
+        assertThat(t1.orElse(Try { 4 })).isEqualTo(t1)
+    }
+
+    @Test
+    internal fun testOrElseFailure() {
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 2 / 0 }
+        val t2 = Try { 4 }
+        assertThat(t1.orElse(t2)).isEqualTo(t2)
+    }
+
+    @Test
+    internal fun testGetOrElseSuccess() {
+        val t1 = Try { 2 }
+        assertThat(t1.getOrElse(4)).isEqualTo(2)
+    }
+
+    @Test
+    internal fun testGetOrElseFailure() {
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 2 / 0 }
+        assertThat(t1.getOrElse(4)).isEqualTo(4)
+    }
+
+    @Test
+    internal fun testFoldSuccess() {
+        val t1 = Try { 2 }
+        val fold = t1.fold({ t -> t.message }, { i -> i * 2 })
+        assertThat(fold).isEqualTo(4)
+    }
+
+    @Test
+    internal fun testFoldFailure() {
+        @Suppress("DIVISION_BY_ZERO")
+        val t1 = Try { 2 / 0 }
+        val fold = t1.fold({ t -> t.message }, { i -> (i * 2).toString() })
+        assertThat(fold).isEqualTo("/ by zero")
     }
 }
