@@ -12,10 +12,11 @@ plugins {
     id("com.github.nwillc.vplugin") version "2.3.0"
     id("org.jmailen.kotlinter") version "1.20.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
+    id("com.github.ngyewch.git-version") version "0.2"
 }
 
 group = "com.github.nwillc"
-version = "1.0-SNAPSHOT"
+version = gitVersion.gitVersionInfo.gitVersionName.substring(1)
 
 logger.lifecycle("${project.name} $version")
 
@@ -28,6 +29,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+}
+
+gitVersion {
+    gitTagPrefix = "v"
 }
 
 jacoco {
