@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.BintrayExtension
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import org.jetbrains.dokka.gradle.DokkaTask
 
 val assertJVersion = "3.11.1"
 val coverageThreshold = 0.90
@@ -8,6 +9,7 @@ val jacocoToolVersion = "0.8.2"
 val jupiterVersion = "5.3.2"
 val jvmTargetVersion = "1.8"
 val publicationName = "maven"
+val versionTag = "1.0.1-SNAPSHOT"
 
 plugins {
     jacoco
@@ -17,10 +19,11 @@ plugins {
     id("org.jmailen.kotlinter") version "1.20.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
     id("com.jfrog.bintray") version "1.8.4"
+    id("org.jetbrains.dokka") version "0.9.17"
 }
 
 group = "com.github.nwillc"
-version = "1.0.0"
+version = versionTag
 
 logger.lifecycle("${project.name} $version")
 
@@ -49,6 +52,12 @@ val sourcesJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
 }
 
+val javadocJar by tasks.registering(Jar::class) {
+    dependsOn("dokka")
+    classifier = "javadoc"
+    from("$buildDir/javadoc")
+}
+
 publishing {
     publications {
         create<MavenPublication>(publicationName) {
@@ -58,6 +67,7 @@ publishing {
 
             from(components["java"])
             artifact(sourcesJar.get())
+            artifact(javadocJar.get())
         }
     }
 }
@@ -94,6 +104,11 @@ tasks {
     named("check") {
         dependsOn(":jacocoTestCoverageVerification")
     }
+    withType<DokkaTask> {
+        outputFormat = "html"
+        includeNonPublic = false
+        outputDirectory = "$buildDir/dokka"
+    }
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -114,5 +129,15 @@ tasks {
     }
     withType<GenerateMavenPom> {
         destination = file("$buildDir/libs/${project.name}-$version.pom")
+    }
+    withType<BintrayUploadTask> {
+        onlyIf {
+            if (versionTag.contains('-')) {
+                logger.lifecycle("Version $versionTag is not a release version - skipping upload.")
+                false
+            } else {
+                true
+            }
+        }
     }
 }
