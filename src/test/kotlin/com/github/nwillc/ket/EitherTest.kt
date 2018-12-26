@@ -18,7 +18,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class EitherTest {
-    
     companion object {
         const val leftValue = 123
         val left: Either<Int, String> = Left(leftValue)
@@ -46,8 +45,8 @@ internal class EitherTest {
 
     @Test
     internal fun testFold() {
-        assertThat(left.fold({ it + 1 }, { it.toLowerCase() } )).isEqualTo(leftValue + 1)
-        assertThat(right.fold({ it + 1 }, { it.toLowerCase() } )).isEqualTo(rightValue.toLowerCase())
+        assertThat(left.fold({ it + 1 }, { it.toLowerCase() })).isEqualTo(leftValue + 1)
+        assertThat(right.fold({ it + 1 }, { it.toLowerCase() })).isEqualTo(rightValue.toLowerCase())
     }
 
     @Test
@@ -72,21 +71,21 @@ internal class EitherTest {
 
     @Test
     internal fun testMapLeft() {
-        assertThat(left.mapLeft { it * 2 } ).isEqualTo(leftValue * 2)
+        assertThat(left.mapLeft { it * 2 }).isEqualTo(leftValue * 2)
     }
 
     @Test
     internal fun testMapRight() {
-        assertThat(right.mapRight { it.toUpperCase() } ).isEqualTo(rightValue.toUpperCase())
+        assertThat(right.mapRight { it.toUpperCase() }).isEqualTo(rightValue.toUpperCase())
     }
 
     @Test
     internal fun testRightMapLeft() {
-        assertThat(right.mapLeft { it * 2 } ).isNull()
+        assertThat(right.mapLeft { it * 2 }).isNull()
     }
 
     @Test
     internal fun testLeftMapRight() {
-        assertThat(left.mapRight { it.toUpperCase() } ).isNull()
+        assertThat(left.mapRight { it.toUpperCase() }).isNull()
     }
 }
