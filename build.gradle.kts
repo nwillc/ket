@@ -16,12 +16,11 @@ plugins {
     id("com.github.nwillc.vplugin") version "2.3.0"
     id("org.jmailen.kotlinter") version "1.20.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
-    id ("se.lovef.git-version") version "0.2.3"
     id("com.jfrog.bintray") version "1.8.4"
 }
 
 group = "com.github.nwillc"
-version = gitVersion("1.0")
+version = "1.0.0"
 
 logger.lifecycle("${project.name} $version")
 
@@ -41,7 +40,7 @@ jacoco {
 }
 
 detekt {
-    input = files("src/main/kotlin")
+    input = files("./src/main/kotlin")
     filters = ".*/build/.*"
 }
 
@@ -63,26 +62,24 @@ publishing {
     }
 }
 
-
-//bintray {
-//    user = System.getenv("BINTRAY_USER")
-//    key = System.getenv("BINTRAY_API_KEY")
-//    dryRun = false
-//    publish = true
-//    setPublications(publicationName)
-//    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-//        repo = publicationName
-//        name = project.name
-//        desc = "Kotlin Either and Try."
-//        websiteUrl = "https://github.com/nwillc/ket"
-//        issueTrackerUrl = "https://github.com/nwillc/ket/issues"
-//        vcsUrl = "https://github.com/nwillc/ket.git"
-//        version.vcsTag = version
-//        setLicenses("ISC")
-//        setLabels("kotlin", "Either", "Try")
-//        publicDownloadNumbers = true
-//    })
-//}
+bintray {
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_API_KEY")
+    dryRun = false
+    publish = true
+    setPublications(publicationName)
+    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
+        repo = publicationName
+        name = project.name
+        desc = "Kotlin Either and Try."
+        websiteUrl = "https://github.com/nwillc/ket"
+        issueTrackerUrl = "https://github.com/nwillc/ket/issues"
+        vcsUrl = "https://github.com/nwillc/ket.git"
+        setLicenses("ISC")
+        setLabels("kotlin", "Either", "Try")
+        publicDownloadNumbers = true
+    })
+}
 
 tasks {
     jacocoTestCoverageVerification {
@@ -118,14 +115,4 @@ tasks {
     withType<GenerateMavenPom> {
         destination = file("$buildDir/libs/${project.name}-$version.pom")
     }
-//    withType<BintrayUploadTask> {
-//        onlyIf {
-//            if (version.contains('-')) {
-//                logger.lifecycle("Version $version is not a release version - skipping upload.")
-//                false
-//            } else {
-//                true
-//            }
-//        }
-//    }
 }
