@@ -119,4 +119,17 @@ tasks {
             }
         }
     }
+    withType<GenerateMavenPom> {
+        destination = file("$buildDir/libs/${project.name}-$version.pom")
+    }
+    withType<BintrayUploadTask> {
+        onlyIf {
+            if (gitVersion.gitVersionInfo.gitVersionName.contains('-')) {
+                logger.lifecycle("Version ${gitVersion.gitVersionInfo.gitVersionName} is not a release version - skipping upload.")
+                false
+            } else {
+                true
+            }
+        }
+    }
 }
