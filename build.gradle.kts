@@ -55,7 +55,7 @@ val sourcesJar by tasks.registering(Jar::class) {
 val javadocJar by tasks.registering(Jar::class) {
     dependsOn("dokka")
     classifier = "javadoc"
-    from("$buildDir/javadoc")
+    from("$buildDir/dokka")
 }
 
 publishing {
