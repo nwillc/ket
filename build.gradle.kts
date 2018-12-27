@@ -9,7 +9,7 @@ val jacocoToolVersion = "0.8.2"
 val jupiterVersion = "5.3.2"
 val jvmTargetVersion = "1.8"
 val publicationName = "maven"
-val versionTag = "1.0.1-SNAPSHOT"
+val versionTag = "1.0.1"
 
 plugins {
     jacoco
@@ -85,6 +85,7 @@ bintray {
         websiteUrl = "https://github.com/nwillc/ket"
         issueTrackerUrl = "https://github.com/nwillc/ket/issues"
         vcsUrl = "https://github.com/nwillc/ket.git"
+        version.vcsTag = "v$versionTag"
         setLicenses("ISC")
         setLabels("kotlin", "Either", "Try")
         publicDownloadNumbers = true
