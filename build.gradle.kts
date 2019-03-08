@@ -3,20 +3,20 @@ import com.jfrog.bintray.gradle.BintrayExtension
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.dokka.gradle.DokkaTask
 
-val assertJVersion = "3.11.1"
+val assertJVersion = "3.12.1"
 val coverageThreshold = 0.90
 val jacocoToolVersion = "0.8.2"
-val jupiterVersion = "5.3.2"
+val jupiterVersion = "5.4.0"
 val jvmTargetVersion = "1.8"
 val publicationName = "maven"
-val versionTag = "1.0.1"
+val versionTag = "1.0.2"
 
 plugins {
     jacoco
     `maven-publish`
-    kotlin("jvm") version "1.3.11"
+    kotlin("jvm") version "1.3.21"
     id("com.github.nwillc.vplugin") version "2.3.0"
-    id("org.jmailen.kotlinter") version "1.20.1"
+    id("org.jlleitschuh.gradle.ktlint") version "7.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
     id("com.jfrog.bintray") version "1.8.4"
     id("org.jetbrains.dokka") version "0.9.17"
@@ -116,6 +116,13 @@ tasks {
     withType<Test> {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
+        beforeTest(KotlinClosure1<TestDescriptor, Unit>({ logger.lifecycle("    Running ${this.className}.${this.name}") }))
+        afterSuite(KotlinClosure2<TestDescriptor, TestResult, Unit>({ descriptor, result ->
+            if (descriptor.parent == null) {
+                logger.lifecycle("Tests run: ${result.testCount}, Failures: ${result.failedTestCount}, Skipped: ${result.skippedTestCount}")
+            }
+            Unit
+        }))
     }
     withType<JacocoReport> {
         dependsOn("test")

@@ -18,10 +18,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
-internal class TryTest {
+class TryTest {
 
     @Test
-    internal fun testSuccess() {
+    fun testSuccess() {
         val t1 = Try { 10 / 2 }
         assertThat(t1.isSuccess).isTrue()
         assertThat(t1.toString()).isEqualTo("Success: 5")
@@ -29,7 +29,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testFailue() {
+    fun testFailue() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 10 / 0 }
         assertThat(t1.isFailure).isTrue()
@@ -38,7 +38,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testMapSuccessOnSuccess() {
+    fun testMapSuccessOnSuccess() {
         val t1 = Try { "HelloWorld" }
         val t2 = t1.map { it.toUpperCase() }
         assertThat(t2.isSuccess).isTrue()
@@ -46,7 +46,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testMapFailureOnSuccess() {
+    fun testMapFailureOnSuccess() {
         val t1 = Try { 1 }
         val t2 = t1.map { it / 0 }
         assertThat(t2.isFailure).isTrue()
@@ -54,7 +54,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testMapSuccessOnFailure() {
+    fun testMapSuccessOnFailure() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 10 / 0 }
         val t2 = t1.map { it + 5 }
@@ -63,7 +63,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testMapFailureOnFailure() {
+    fun testMapFailureOnFailure() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 10 / 0 }
         assertThat(t1.isFailure).isTrue()
@@ -74,7 +74,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testFlatMapSuccessOnSuccess() {
+    fun testFlatMapSuccessOnSuccess() {
         val t1 = Try { 2 }
         val t2 = t1.flatMap { i -> Try { i.toString() } }
         assertThat(t2.isSuccess)
@@ -82,7 +82,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testFlatMapFailureOnSuccess() {
+    fun testFlatMapFailureOnSuccess() {
         val t1 = Try { 2 }
         @Suppress("DIVISION_BY_ZERO")
         val t2 = t1.flatMap { i -> Try { i / 0 } }
@@ -91,7 +91,7 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testFlatMapSuccessOnFailure() {
+    fun testFlatMapSuccessOnFailure() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 2 / 0 }
         val t2 = t1.flatMap { i -> Try { i.toString() } }
@@ -100,13 +100,13 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testOrElseSuccess() {
+    fun testOrElseSuccess() {
         val t1 = Try { 2 }
         assertThat(t1.orElse(Try { 4 })).isEqualTo(t1)
     }
 
     @Test
-    internal fun testOrElseFailure() {
+    fun testOrElseFailure() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 2 / 0 }
         val t2 = Try { 4 }
@@ -114,27 +114,27 @@ internal class TryTest {
     }
 
     @Test
-    internal fun testGetOrElseSuccess() {
+    fun testGetOrElseSuccess() {
         val t1 = Try { 2 }
         assertThat(t1.getOrElse(4)).isEqualTo(2)
     }
 
     @Test
-    internal fun testGetOrElseFailure() {
+    fun testGetOrElseFailure() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 2 / 0 }
         assertThat(t1.getOrElse(4)).isEqualTo(4)
     }
 
     @Test
-    internal fun testFoldSuccess() {
+    fun testFoldSuccess() {
         val t1 = Try { 2 }
         val fold = t1.fold({ t -> t.message }, { i -> i * 2 })
         assertThat(fold).isEqualTo(4)
     }
 
     @Test
-    internal fun testFoldFailure() {
+    fun testFoldFailure() {
         @Suppress("DIVISION_BY_ZERO")
         val t1 = Try { 2 / 0 }
         val fold = t1.fold({ t -> t.message }, { i -> (i * 2).toString() })
