@@ -6,7 +6,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 val assertJVersion = "3.12.2"
 val coverageThreshold = 0.90
 val jacocoToolVersion = "0.8.2"
-val jupiterVersion = "5.5.0-M1"
+val jupiterVersion = "5.5.0-RC2"
 val jvmTargetVersion = "1.8"
 val publicationName = "maven"
 val versionTag = "1.0.3-SNAPSHOT"
@@ -14,7 +14,7 @@ val versionTag = "1.0.3-SNAPSHOT"
 plugins {
     jacoco
     `maven-publish`
-    kotlin("jvm") version "1.3.31"
+    kotlin("jvm") version "1.3.40"
     id("com.github.nwillc.vplugin") version "2.3.0"
     id("org.jlleitschuh.gradle.ktlint") version "8.0.0"
     id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
