@@ -1,12 +1,12 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.BintrayExtension
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val assertJVersion = "3.12.2"
 val coverageThreshold = 0.90
 val jacocoToolVersion = "0.8.2"
-val jupiterVersion = "5.5.0-RC2"
+val jupiterVersion = "5.5.1"
 val jvmTargetVersion = "1.8"
 val publicationName = "maven"
 val versionTag = "1.0.3-SNAPSHOT"
@@ -14,10 +14,10 @@ val versionTag = "1.0.3-SNAPSHOT"
 plugins {
     jacoco
     `maven-publish`
-    kotlin("jvm") version "1.3.40"
-    id("com.github.nwillc.vplugin") version "2.3.0"
-    id("org.jlleitschuh.gradle.ktlint") version "8.0.0"
-    id("io.gitlab.arturbosch.detekt") version "1.0.0.RC9.2"
+    kotlin("jvm") version "1.3.41"
+    id("com.github.nwillc.vplugin") version "3.0.1"
+    id("org.jlleitschuh.gradle.ktlint") version "8.2.0"
+    id("io.gitlab.arturbosch.detekt") version "1.0.0-RC16"
     id("com.jfrog.bintray") version "1.8.4"
     id("org.jetbrains.dokka") version "0.9.18"
 }
@@ -45,6 +45,10 @@ jacoco {
 detekt {
     input = files("./src/main/kotlin")
     filters = ".*/build/.*"
+}
+
+ktlint {
+    version.set("0.34.1")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
